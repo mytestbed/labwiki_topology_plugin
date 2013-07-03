@@ -1,0 +1,86 @@
+
+/** Graph Editor **/
+
+div.topology_editor .canvas {
+  padding-bottom: 1px;
+  border-bottom: 1px solid lightgray;
+}
+
+div.topology_editor svg {
+  background-color: #FFF;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+div.topology_editor svg:not(.active):not(.ctrl) {
+  cursor: crosshair;
+}
+
+div.topology_editor .link {
+  fill: none;
+  stroke: #000;
+  stroke-width: 4px;
+  cursor: pointer;
+}
+
+div.topology_editor svg:not(.active):not(.ctrl) path.link {
+  cursor: pointer;
+}
+
+div.topology_editor .link.selected {
+  stroke-dasharray: 10,2;
+  //stroke: red;
+}
+
+div.topology_editor path.link.dragline {
+  pointer-events: none;
+}
+
+div.topology_editor path.link.hidden {
+  stroke-width: 0;
+}
+
+div.topology_editor .node {
+  stroke-width: 1.5px;
+  stroke: black;
+  fill: white;
+  cursor: pointer;
+}
+
+div.topology_editor .node.selected {
+  //stroke: red !important;
+  stroke-width: 2.5px;
+  stroke-dasharray: 10,2;
+}
+
+div.topology_editor text {
+  font: 12px sans-serif;
+  pointer-events: none;
+}
+
+div.topology_editor text.id {
+  text-anchor: middle;
+  font-weight: bold;
+}
+
+div.topology_editor .tooltip {
+    border: 2px solid lightgray;
+    border-radius: 4px;
+    padding: 4pt;
+    background: white;
+    opacity: 1;
+
+}
+
+/** TOOL BAR **/
+
+div.topology_editor ol.widget_toolbar li.cmd_save a {
+  background: url(/resource/image/graph/info.png) 3px 3px no-repeat;
+  background: url(/resource/vendor/must_have_icon_set/Save/Save_16x16.png) 2px 2px no-repeat;
+  background-size: 16px 16px;
+}
+
