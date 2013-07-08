@@ -33,7 +33,6 @@ div.topology_editor svg:not(.active):not(.ctrl) path.link {
 
 div.topology_editor .link.selected {
   stroke-dasharray: 10,2;
-  //stroke: red;
 }
 
 div.topology_editor path.link.dragline {
@@ -52,7 +51,6 @@ div.topology_editor .node {
 }
 
 div.topology_editor .node.selected {
-  //stroke: red !important;
   stroke-width: 2.5px;
   stroke-dasharray: 10,2;
 }
