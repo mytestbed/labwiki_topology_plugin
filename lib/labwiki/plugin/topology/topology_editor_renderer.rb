@@ -9,7 +9,7 @@ module LabWiki::Plugin::Topology
 
     def initialize(widget, topology_descr, opts = {})
       super opts
-      @opts = opts.dup
+      @opts = {editable: true}.merge(opts)
       @opts[:topology] = topology_descr
       @widget = widget
       #@topology_descr = topology_descr
@@ -21,7 +21,7 @@ module LabWiki::Plugin::Topology
       @wid = "w#{@widget.object_id}"
       graph_id = @wid + '_graph'
       div :class => "topology_editor", :id => @wid do
-        render_toolbar ['add_node']
+        render_toolbar ['add_node'] if @opts[:editable]
         div :id => graph_id, :class => 'canvas'
         #rawtext @content
       end
