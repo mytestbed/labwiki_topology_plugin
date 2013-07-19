@@ -28,7 +28,7 @@ div.graph_editor .link {
 }
 
 div.graph_editor .link_unknown {
-  stroke: #000;
+  stroke: blue;
 }
 
 div.graph_editor .link_up {
@@ -62,7 +62,7 @@ div.graph_editor .node {
 
 div.graph_editor .node_unknown {
   stroke-width: 1.5px;
-  stroke: #000;
+  stroke: blue;
 }
 
 div.graph_editor .node_up {
