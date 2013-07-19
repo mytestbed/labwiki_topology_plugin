@@ -24,7 +24,7 @@ LabWiki::PluginManager.register :topology, {
       :context => :execute,
       :priority => lambda do |opts|
         puts ">>> PRIORITY FOR #{opts}"
-        (opts[:url].end_with? '.rspec') ? 500 : nil
+        (opts[:url].end_with? '.rspec.json') ? 500 : nil
       end,
       :widget_class => LabWiki::Plugin::Topology::SliceMonitorWidget
     }
