@@ -76,9 +76,8 @@ div.topology_editor .tooltip {
 
 /** TOOL BAR **/
 
-div.topology_editor ol.widget_toolbar li.cmd_save a {
-  background: url(/resource/image/graph/info.png) 3px 3px no-repeat;
-  background: url(/resource/vendor/must_have_icon_set/Save/Save_16x16.png) 2px 2px no-repeat;
+div.topology_editor ol.widget_toolbar li.cmd_add_node a {
+  background: url(/plugin/topology/img/blue_circle_16x16.png) 2px 2px no-repeat;
   background-size: 16px 16px;
 }
 

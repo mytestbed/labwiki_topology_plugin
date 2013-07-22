@@ -14,6 +14,7 @@ LabWiki::PluginManager.register :topology, {
   :widgets => [
     {
       :context => :prepare,
+      :name => 'topology',
       :priority => lambda do |opts|
         #puts ">>> PRIORITY FOR #{opts}"
         (opts[:url].end_with? '.rspec') ? 500 : nil
@@ -22,6 +23,7 @@ LabWiki::PluginManager.register :topology, {
     },
     {
       :context => :execute,
+      :name => 'topology',
       :priority => lambda do |opts|
         puts ">>> PRIORITY FOR #{opts}"
         (opts[:url].end_with? '.rspec.json') ? 500 : nil
