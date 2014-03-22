@@ -5,7 +5,7 @@ module LabWiki::Plugin::Topology
 
   # Override some of the functionality of the text renderer defined in OMF::Web
   class SliceMonitorRenderer < Erector::Widget
-    include OMF::Common::Loggable
+    include OMF::Base::Loggable
 
     def initialize(widget, health_ds_proxy, opts = {})
       super opts
@@ -15,7 +15,7 @@ module LabWiki::Plugin::Topology
     end
 
     def content
-      link :href => '/plugin/topology/css/graph_editor.css', :rel => "stylesheet", :type => "text/css"
+      link :href => 'plugin/topology/css/graph_editor.css', :rel => "stylesheet", :type => "text/css"
       @wid = "w#{@widget.object_id}"
       graph_id = @wid + '_graph'
       div :class => "slice_monitor", :id => @wid do

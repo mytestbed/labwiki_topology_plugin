@@ -35,6 +35,8 @@ LabWiki::PluginManager.register :topology, {
     :topology_editor_renderer => LabWiki::Plugin::Topology::TopologyEditorRenderer,
     :slice_monitor_renderer => LabWiki::Plugin::Topology::SliceMonitorRenderer
   },
-  :resources => File.dirname(__FILE__) + '/resource' # should find a more portable solution
+  :resources => File.dirname(__FILE__) + '/resource',
+  :global_js => 'js/topology_editor_global.js'
+
 }
 

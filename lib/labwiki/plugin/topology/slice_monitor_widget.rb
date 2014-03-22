@@ -1,5 +1,6 @@
 require 'labwiki/column_widget'
 require 'labwiki/plugin/topology/slice_monitor_renderer'
+require 'omf_oml/table'
 require 'omf_oml/indexed_table'
 
 module LabWiki::Plugin::Topology

@@ -16,15 +16,19 @@ module LabWiki::Plugin::Topology
       @topology = nil
     end
 
+    def on_new_topology(params, req)
+      debug "on_new_topology: '#{params.inspect}'"
+      @topology_descr = {}
+    end
 
     def content_renderer()
       debug "content_renderer: #{@opts.inspect}"
       OMF::Web::Theme.require 'topology_editor_renderer'
 
-      content_url = @content_opts[:url]
-      content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(content_url, @content_opts)
-      topology_descr = content_proxy.content
-      TopologyEditorRenderer.new(self, topology_descr)
+      # content_url = @content_opts[:url]
+      # content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(content_url, @content_opts)
+      # topology_descr = content_proxy.content
+      TopologyEditorRenderer.new(self, @topology_descr)
     end
 
     def mime_type
