@@ -1,0 +1,146 @@
+{
+  "nodes": [
+    {
+      "uuid": "c024a218-7f10-45d8-bad6-c737f51ebb96",
+      "name": "nodeA",
+      "type": "node",
+      "available": true,
+      "exclusive": true,
+      "domain": "omf:nitos",
+      "component_manager_gurn": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am",
+      "status": "unknown"
+    },
+    {
+      "uuid": "445a213c-9ae4-4f1d-a3d2-4895dadb225b",
+      "name": "nodeE",
+      "type": "node",
+      "available": true,
+      "exclusive": true,
+      "domain": "omf:nitos",
+      "component_manager_gurn": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am",
+      "status": "unknown"
+    },
+    {
+      "uuid": "3d89a4c2-26db-4e47-9376-c25e82353fcc",
+      "name": "nodeC",
+      "type": "node",
+      "available": true,
+      "exclusive": true,
+      "domain": "omf:nitos",
+      "component_manager_gurn": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am",
+      "status": "unknown"
+    },
+    {
+      "uuid": "b33d0313-defe-4411-99c2-95b88afc3121",
+      "name": "nodeB",
+      "type": "node",
+      "available": true,
+      "exclusive": true,
+      "domain": "omf:nitos",
+      "component_manager_gurn": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am",
+      "status": "unknown"
+    },
+    {
+      "uuid": "4466308b-927c-407e-98e1-c1edde3420f4",
+      "name": "nodeD",
+      "type": "node",
+      "available": true,
+      "exclusive": true,
+      "domain": "omf:nitos",
+      "component_manager_gurn": "urn:publicid:IDN+exogeni.net:rcivmsite+authority+am",
+      "status": "unknown"
+    }
+  ],
+  "links": [
+    {
+      "uuid": "ca58e8cb-c2cb-4940-a97c-7ac970e5754c",
+      "name": "link3",
+      "type": "link",
+      "domain": "omf:nitos",
+      "status": "unknown",
+      "from": {
+        "node": "3d89a4c2-26db-4e47-9376-c25e82353fcc",
+        "ip_address": "192.168.5.12"
+      },
+      "to": {
+        "node": "c024a218-7f10-45d8-bad6-c737f51ebb96",
+        "ip_address": "192.168.5.11"
+      }
+    },
+    {
+      "uuid": "d9dc231c-dec1-4519-b2b6-d246ffd34e3e",
+      "name": "link2",
+      "type": "link",
+      "domain": "omf:nitos",
+      "status": "unknown",
+      "from": {
+        "node": "4466308b-927c-407e-98e1-c1edde3420f4",
+        "ip_address": "192.168.3.13"
+      },
+      "to": {
+        "node": "3d89a4c2-26db-4e47-9376-c25e82353fcc",
+        "ip_address": "192.168.3.12"
+      }
+    },
+    {
+      "uuid": "3b990091-a9cd-4dea-a203-b9fe7182548d",
+      "name": "link0",
+      "type": "link",
+      "domain": "omf:nitos",
+      "status": "unknown",
+      "from": {
+        "node": "c024a218-7f10-45d8-bad6-c737f51ebb96",
+        "ip_address": "192.168.4.11"
+      },
+      "to": {
+        "node": "b33d0313-defe-4411-99c2-95b88afc3121",
+        "ip_address": "192.168.4.10"
+      }
+    },
+    {
+      "uuid": "303b2328-a5d4-4f67-8ba7-8f385c96e378",
+      "name": "link4",
+      "type": "link",
+      "domain": "omf:nitos",
+      "status": "unknown",
+      "from": {
+        "node": "3d89a4c2-26db-4e47-9376-c25e82353fcc",
+        "ip_address": "192.168.6.12"
+      },
+      "to": {
+        "node": "445a213c-9ae4-4f1d-a3d2-4895dadb225b",
+        "ip_address": "192.168.6.14"
+      }
+    },
+    {
+      "uuid": "01217dce-4868-49d9-9a3d-f94d046d96c6",
+      "name": "link1",
+      "type": "link",
+      "domain": "omf:nitos",
+      "status": "unknown",
+      "from": {
+        "node": "4466308b-927c-407e-98e1-c1edde3420f4",
+        "ip_address": "192.168.1.13"
+      },
+      "to": {
+        "node": "b33d0313-defe-4411-99c2-95b88afc3121",
+        "ip_address": "192.168.1.10"
+      }
+    },
+    {
+      "uuid": "7698a500-66e5-4de1-901e-f109bfd4ef8f",
+      "name": "link5",
+      "type": "link",
+      "domain": "omf:nitos",
+      "status": "unknown",
+      "from": {
+        "node": "3d89a4c2-26db-4e47-9376-c25e82353fcc",
+        "ip_address": "192.168.2.12"
+      },
+      "to": {
+        "node": "b33d0313-defe-4411-99c2-95b88afc3121",
+        "ip_address": "192.168.2.10"
+      }
+    }
+  ]
+}
