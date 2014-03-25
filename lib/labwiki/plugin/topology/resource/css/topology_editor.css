@@ -27,11 +27,18 @@ div.topology_editor .link {
   cursor: pointer;
 }
 
+div.topology_editor .link_over {
+  fill: none;
+  stroke: trnsparent;
+  stroke-width: 20px;
+  cursor: pointer;
+}
+
 div.topology_editor svg:not(.active):not(.ctrl) path.link {
   cursor: pointer;
 }
 
-div.topology_editor .link.selected {
+div.topology_editor .link.link_selected {
   stroke-dasharray: 10,2;
 }
 
@@ -50,10 +57,23 @@ div.topology_editor .node {
   cursor: pointer;
 }
 
-div.topology_editor .node.selected {
+div.topology_editor .element_selected .node {
   stroke-width: 2.5px;
   stroke-dasharray: 10,2;
 }
+
+div.topology_editor .network {
+  stroke-width: 1.5px;
+  stroke: black;
+  fill: white;
+  cursor: pointer;
+}
+
+div.topology_editor .element_selected .network {
+  stroke-width: 2.5px;
+  stroke-dasharray: 10,2;
+}
+
 
 div.topology_editor text {
   font: 12px sans-serif;

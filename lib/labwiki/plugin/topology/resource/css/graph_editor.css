@@ -76,10 +76,37 @@ div.graph_editor .node_down {
 }
 
 
-div.graph_editor .node.selected {
+div.graph_editor .network.selected {
   stroke-width: 2.5px;
   stroke-dasharray: 10,2;
 }
+
+div.graph_editor .network {
+  fill: white;
+  cursor: pointer;
+}
+
+div.graph_editor .network_unknown {
+  stroke-width: 1.5px;
+  stroke: blue;
+}
+
+div.graph_editor .network_up {
+  stroke-width: 2.5px;
+  stroke: green;
+}
+
+div.graph_editor .network_down {
+  stroke-width: 2.5px;
+  stroke: red;
+}
+
+
+div.graph_editor .network.selected {
+  stroke-width: 2.5px;
+  stroke-dasharray: 10,2;
+}
+
 
 div.graph_editor text {
   font: 12px sans-serif;
