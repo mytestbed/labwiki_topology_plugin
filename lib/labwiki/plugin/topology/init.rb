@@ -7,6 +7,8 @@ require 'labwiki/plugin/topology/topology_editor_widget'
 require 'labwiki/plugin/topology/slice_monitor_widget'
 
 LabWiki::PluginManager.register :topology, {
+  :version => LabWiki.plugin_version([0, 2, 'pre'], __FILE__),
+
   :search => lambda do ||
   end,
   :selector => lambda do ||
