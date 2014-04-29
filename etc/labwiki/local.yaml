@@ -1,0 +1,5 @@
+
+labwiki:
+  plugins:
+    topology:
+      plugin_dir: labwiki_topology_editor
