@@ -29,7 +29,7 @@ div.topology_editor .link {
 
 div.topology_editor .link_over {
   fill: none;
-  stroke: trnsparent;
+  stroke: transparent;
   stroke-width: 20px;
   cursor: pointer;
 }
@@ -94,6 +94,19 @@ div.topology_editor .tooltip {
 
 }
 
+/*** ENTITY STATE **/
+
+div.element_state {
+  height: 200px;
+  padding: 10px 10px 20px 10px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+div.element_state td.row_def_value span {
+  font-size: 8pt;
+  margin-right: 5px;
+}
 /** TOOL BAR **/
 
 div.topology_editor ol.widget_toolbar li.cmd_add_node a {

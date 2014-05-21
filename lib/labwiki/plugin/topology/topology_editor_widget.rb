@@ -12,17 +12,22 @@ module LabWiki::Plugin::Topology
         raise "Should only be used in ':prepare' column"
       end
       super column, :type => :topology
-      puts ">>>> EDITOR: #{config_opts}"
+      #puts ">>>> EDITOR: #{config_opts}"
       @topology = nil
     end
 
     def on_new_topology(params, req)
-      debug "on_new_topology: '#{params.inspect}'"
+      debug "on_new_topology: '#{params}'"
       @topology_descr = {}
     end
 
+    def on_save(params, req)
+      debug "on_save: #{params}"
+      nil
+    end
+
     def content_renderer()
-      debug "content_renderer: #{@opts.inspect}"
+      debug "content_renderer: #{@opts}"
       OMF::Web::Theme.require 'topology_editor_renderer'
 
       # content_url = @content_opts[:url]

@@ -19,9 +19,10 @@ module LabWiki::Plugin::Topology
     def content
       link :href => '/resource/plugin/topology/css/topology_editor.css', :rel => "stylesheet", :type => "text/css"
       @wid = "w#{@widget.object_id}"
-      graph_id = @wid + '_graph'
+      #graph_id = @wid + '_graph'
       div :class => "topology_editor", :id => @wid do
         div :class => 'canvas'
+        div :class => 'element_state lw-form'
         #rawtext @content
       end
       javascript %{
