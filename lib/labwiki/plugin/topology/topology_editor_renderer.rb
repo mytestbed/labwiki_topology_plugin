@@ -11,6 +11,7 @@ module LabWiki::Plugin::Topology
       super opts
       @opts = {editable: true}.merge(opts)
       @opts[:topology] = topology_descr
+      @wid = @opts[:wid] = "w#{widget.object_id}"
       @widget = widget
       #@topology_descr = topology_descr
       #puts "CONTENT>>>> #{opts.inspect}"
@@ -18,7 +19,6 @@ module LabWiki::Plugin::Topology
 
     def content
       link :href => '/resource/plugin/topology/css/topology_editor.css', :rel => "stylesheet", :type => "text/css"
-      @wid = "w#{@widget.object_id}"
       #graph_id = @wid + '_graph'
       div :class => "topology_editor", :id => @wid do
         div :class => 'canvas'
