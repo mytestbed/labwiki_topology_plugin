@@ -11,6 +11,7 @@ module LabWiki::Plugin::Topology
       super opts
       @opts = {editable: true}.merge(opts)
       @opts[:topology] = topology_descr
+      @opts[:topology_name] = widget.topology_name
       @wid = @opts[:wid] = "w#{widget.object_id}"
       @widget = widget
       #@topology_descr = topology_descr
