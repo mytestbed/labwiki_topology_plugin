@@ -107,6 +107,13 @@ div.graph_editor .network.selected {
   stroke-dasharray: 10,2;
 }
 
+/**** INTERFACE ****/
+div.graph_editor circle.selected {
+  fill: red;
+  stroke: red;
+  cursor: pointer;
+}
+
 
 div.graph_editor text {
   font: 12px sans-serif;
