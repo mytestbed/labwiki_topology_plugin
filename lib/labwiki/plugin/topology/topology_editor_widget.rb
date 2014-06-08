@@ -8,43 +8,57 @@ module LabWiki::Plugin::Topology
   class TopologyEditorWidget < LabWiki::ColumnWidget
     attr_reader :topology_name
 
-    def initialize(column, config_opts, unused)
+    def initialize(column, config_opts, opts)
       unless column == :prepare
         raise "Should only be used in ':prepare' column"
       end
       super column, :type => :topology
-      #puts ">>>> EDITOR: #{config_opts}"
-      @topology = nil
+      puts ">>>> EDITOR: #{config_opts} - #{opts}"
+
+      @is_new = true
+      if @url = opts[:url]
+        @name = @url.split('/')[-1].split('.')[0]
+        @repo = OMF::Web::ContentRepository.find_repo_for(@url, opts)
+        @is_new = false
+      end
     end
 
     def on_new_topology(params, req)
       debug "on_new_topology: '#{params}'"
-      @topology_name = params[:topology_name]
-      @topology_descr = {}
+      @name = params[:topology_name]
+
+      @repo = (OMF::Web::SessionStore[:prepare, :repos] || []).first
+      unless @repo
+        error "Could not find any available repo to write"
+        return
+      end
+      @url = @repo.get_url_for_path("topology/#{@name}.gjson")
+      puts ">>>>>> URL >>>>> #{@url}"
+      nil
     end
 
     def on_save(params, req)
-      debug "on_save: #{params}"
-      repo = (OMF::Web::SessionStore[:prepare, :repos] || []).first
-      error "Could not find any available repo to write" if repo.nil?
+      debug "on_save: #{params} - url: #{@url}"
+
       begin
-        url = repo.get_url_for_path("topology/#{params[:topology_name]}.gjson")
-        repo.write(url, params[:graph], "Adding new script #{url}")
+        @repo.write(@url, JSON.pretty_generate(params[:graph]), "Creating or updating script #{@url}")
       rescue => e
-        e_msg = "Failed to create #{url}. #{e.message}"
+        e_msg = "Failed to save #{@url}. #{e.message}"
         OMF::Base::Loggable.logger('repository').error e_msg
       end
+      @is_new = false
       nil
     end
 
     def content_renderer()
-      debug "content_renderer: #{@opts}"
+      debug "content_renderer: #{@opts} -- content_opts: #{@content_opts}"
       OMF::Web::Theme.require 'topology_editor_renderer'
 
-      # content_url = @content_opts[:url]
-      # content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(content_url, @content_opts)
-      # topology_descr = content_proxy.content
-      TopologyEditorRenderer.new(self, @topology_descr)
+      raise "Undefined @url" unless @url
+      #content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(@url, @content_opts)
+      #topology_descr = content_proxy.content
+      topology_descr = @is_new ? nil : @repo.read(@url)
+      TopologyEditorRenderer.new(self, topology_descr)
     end
 
     def mime_type
@@ -52,7 +66,7 @@ module LabWiki::Plugin::Topology
     end
 
     def title
-      "Topology #{@topology_name}"
+      "#{(@name || 'Unknown').capitalize}"
     end
 
 

@@ -34,32 +34,15 @@ module LabWiki::Plugin::Topology
       }
     end
 
-    # def render_toolbar(buttons)
-      # js_toolbar = []
-        # div :class => "widget_toolbar" do
-          # ol :class => "widget_toolbar" do
-            # buttons.each do |name|
-              # id = "#{@wid}_#{name}_a"
-              # li :class => 'cmd_' + name do
-                # a :id => id, :href => "#", :title => name  do
-                  # span name, :class => :toolbar
-                # end
-              # end
-              # js_toolbar << %{
-                # $('\##{id}').click(function(){
-                  # OML.widgets.#{@wid}.on_#{name}_pressed();
-                  # return false;
-                # });
-              # }
-            # end
-          # end
-        # end
-        # javascript(%{
-          # #{js_toolbar.join("\n");}
-        # })
-#
-    # end
+    def title_info
+      {
+        img_src: "/resource/plugin/topology/img/topology-edit-32.png",
+        #img_src: "/resource/vendor/mono_icons/linedpaperpencil32.png",
+        title: @widget.title,
+        sub_title: @widget.sub_title
+      }
 
+    end
   end
 
 end # module
