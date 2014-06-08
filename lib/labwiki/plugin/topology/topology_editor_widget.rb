@@ -6,6 +6,7 @@ module LabWiki::Plugin::Topology
   # Allows editing a topology descrription
   #
   class TopologyEditorWidget < LabWiki::ColumnWidget
+    attr_reader :topology_name
 
     def initialize(column, config_opts, unused)
       unless column == :prepare
@@ -18,11 +19,21 @@ module LabWiki::Plugin::Topology
 
     def on_new_topology(params, req)
       debug "on_new_topology: '#{params}'"
+      @topology_name = params[:topology_name]
       @topology_descr = {}
     end
 
     def on_save(params, req)
       debug "on_save: #{params}"
+      repo = (OMF::Web::SessionStore[:prepare, :repos] || []).first
+      error "Could not find any available repo to write" if repo.nil?
+      begin
+        url = repo.get_url_for_path("topology/#{params[:topology_name]}.gjson")
+        repo.write(url, params[:graph], "Adding new script #{url}")
+      rescue => e
+        e_msg = "Failed to create #{url}. #{e.message}"
+        OMF::Base::Loggable.logger('repository').error e_msg
+      end
       nil
     end
 
@@ -41,8 +52,7 @@ module LabWiki::Plugin::Topology
     end
 
     def title
-      #@experiment ? (@experiment.name || 'NEW') : 'No Experiment'
-      "Topology #{self.object_id}"
+      "Topology #{@topology_name}"
     end
 
 
