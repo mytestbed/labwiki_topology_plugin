@@ -6,36 +6,29 @@ end
 require 'labwiki/plugin/topology/topology_editor_widget'
 require 'labwiki/plugin/topology/slice_monitor_widget'
 
-OMF::Web::ContentRepository::MIME_TYPE[:gjson] = 'text/gjson'
+OMF::Web::ContentRepository.register_mime_type(gjson: 'text/topology')
 
 LabWiki::PluginManager.register :topology, {
   :version => LabWiki.plugin_version([0, 2, 'pre'], __FILE__),
 
-  :search => lambda do ||
-  end,
-  :selector => lambda do ||
-  end,
   :widgets => [
     {
-      :context => :prepare,
       :name => 'topology',
+      :context => :prepare,
       :priority => lambda do |opts|
         #puts ">>> PRIORITY FOR #{opts}"
         (opts[:url].end_with? '.rspec') ? 500 : nil
       end,
       :search => lambda do |pat, opts, wopts|
-        opts[:mime_type] ||= 'text/gjson'
+        opts[:mime_type] ||= 'text/topology'
         OMF::Web::ContentRepository.find_files(pat, opts)
       end,
-      :widget_class => LabWiki::Plugin::Topology::TopologyEditorWidget
+      :widget_class => LabWiki::Plugin::Topology::TopologyEditorWidget,
+      :handle_mime_type => 'text/topology'
     },
     {
       :context => :execute,
       :name => 'topology',
-      :priority => lambda do |opts|
-        puts ">>> PRIORITY FOR #{opts}"
-        (opts[:url].end_with? '.rspec.json') ? 500 : nil
-      end,
       :widget_class => LabWiki::Plugin::Topology::SliceMonitorWidget
     }
   ],
