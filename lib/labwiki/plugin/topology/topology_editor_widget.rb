@@ -33,6 +33,7 @@ module LabWiki::Plugin::Topology
         return
       end
       @url = @repo.get_url_for_path("topology/#{@name}.gjson")
+      @is_new = true
       puts ">>>>>> URL >>>>> #{@url}"
       nil
     end
