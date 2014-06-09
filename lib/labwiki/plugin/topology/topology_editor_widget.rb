@@ -13,7 +13,7 @@ module LabWiki::Plugin::Topology
         raise "Should only be used in ':prepare' column"
       end
       super column, :type => :topology
-      puts ">>>> EDITOR: #{config_opts} - #{opts}"
+      #puts ">>>> EDITOR: #{config_opts} - #{opts}"
 
       @is_new = true
       if @url = opts[:url]
@@ -34,7 +34,6 @@ module LabWiki::Plugin::Topology
       end
       @url = @repo.get_url_for_path("topology/#{@name}.gjson")
       @is_new = true
-      puts ">>>>>> URL >>>>> #{@url}"
       nil
     end
 
@@ -49,6 +48,14 @@ module LabWiki::Plugin::Topology
       end
       @is_new = false
       nil
+    end
+
+    def on_get_content(params, req)
+      debug "on_get_content: #{params}"
+      @content_url = params[:url]
+      @content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(params[:url], params)
+      @topology_name = params[:name].gsub(/\.gjson/, '')
+      @topology_descr = JSON.parse(@content_proxy.content)
     end
 
     def content_renderer()
@@ -70,7 +77,13 @@ module LabWiki::Plugin::Topology
       "#{(@name || 'Unknown').capitalize}"
     end
 
+    def sub_title
+      @content_proxy.name if @content_proxy
+    end
 
+    def content_url
+      @content_url
+    end
   end # class
 
 end # module
