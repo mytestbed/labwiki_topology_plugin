@@ -29,12 +29,19 @@ module LabWiki::Plugin::Topology
       error "Could not find any available repo to write" if repo.nil?
       begin
         url = repo.get_url_for_path("topology/#{params[:topology_name]}.gjson")
-        repo.write(url, params[:graph], "Adding new script #{url}")
+        repo.write(url, JSON.pretty_generate(params[:graph]), "Adding new script #{url}")
       rescue => e
         e_msg = "Failed to create #{url}. #{e.message}"
         OMF::Base::Loggable.logger('repository').error e_msg
       end
       nil
+    end
+
+    def on_get_content(params, req)
+      debug "on_get_content: #{params}"
+      @content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(params[:url], params)
+      @topology_name = params[:name].gsub(/\.gjson/, '')
+      @topology_descr = JSON.parse(@content_proxy.content)
     end
 
     def content_renderer()
