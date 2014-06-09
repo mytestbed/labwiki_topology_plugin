@@ -1,5 +1,6 @@
 require 'labwiki/column_widget'
 require 'labwiki/plugin/topology/topology_editor_renderer'
+require 'labwiki/plugin/topology/slice_setup_renderer'
 
 module LabWiki::Plugin::Topology
 
@@ -8,9 +9,9 @@ module LabWiki::Plugin::Topology
   class TopologyEditorWidget < LabWiki::ColumnWidget
     attr_reader :topology_name
 
-    def initialize(column, config_opts, opts)
-      unless column == :prepare
-        raise "Should only be used in ':prepare' column"
+    def initialize(column, config_opts, unused)
+      unless column == :prepare || column == :execute
+        raise "Should only be used in ':prepare' or ':execute' column"
       end
       super column, :type => :topology
       #puts ">>>> EDITOR: #{config_opts} - #{opts}"
@@ -54,7 +55,7 @@ module LabWiki::Plugin::Topology
       debug "on_get_content: #{params}"
       @content_url = params[:url]
       @content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(params[:url], params)
-      @topology_name = params[:name].gsub(/\.gjson/, '')
+      @topology_name = (params[:name] || params[:url]).gsub(/\.gjson/, '').split('/').last
       @topology_descr = JSON.parse(@content_proxy.content)
     end
 
@@ -63,10 +64,14 @@ module LabWiki::Plugin::Topology
       OMF::Web::Theme.require 'topology_editor_renderer'
 
       raise "Undefined @url" unless @url
-      #content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(@url, @content_opts)
-      #topology_descr = content_proxy.content
-      topology_descr = @is_new ? nil : @repo.read(@url)
+      @topology_descr = @is_new ? nil : @repo.read(@url)
       TopologyEditorRenderer.new(self, topology_descr)
+      case @column
+      when :prepare
+        TopologyEditorRenderer.new(self, @topology_descr)
+      when :execute
+        SliceSetupRenderer.new(self, @topology_descr)
+      end
     end
 
     def mime_type
