@@ -39,6 +39,7 @@ module LabWiki::Plugin::Topology
 
     def on_get_content(params, req)
       debug "on_get_content: #{params}"
+      @content_url = params[:url]
       @content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(params[:url], params)
       @topology_name = params[:name].gsub(/\.gjson/, '')
       @topology_descr = JSON.parse(@content_proxy.content)
@@ -62,7 +63,13 @@ module LabWiki::Plugin::Topology
       "Topology #{@topology_name}"
     end
 
+    def sub_title
+      @content_proxy.name if @content_proxy
+    end
 
+    def content_url
+      @content_url
+    end
   end # class
 
 end # module
