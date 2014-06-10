@@ -54,4 +54,3 @@ LabWiki::PluginManager.register :topology, {
   end
 
 }
-

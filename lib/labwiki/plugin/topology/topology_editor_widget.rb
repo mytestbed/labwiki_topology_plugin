@@ -7,7 +7,7 @@ module LabWiki::Plugin::Topology
   # Allows editing a topology descrription
   #
   class TopologyEditorWidget < LabWiki::ColumnWidget
-    attr_reader :topology_name
+    attr_reader :topology_name, :slice_requested
 
     def initialize(column, config_opts, opts)
       unless column == :prepare || column == :execute
@@ -49,6 +49,14 @@ module LabWiki::Plugin::Topology
       end
       @is_new = false
       nil
+    end
+
+    # TODO Slice related actions could be moved slice monitor?
+    def on_new_slice(params, req)
+      SliceServiceProxy.instance.post('/slices', name: params[:name], topology: @topology_descr) do |response|
+        info "Slice created: #{response}"
+      end
+      @slice_requested = true
     end
 
     def on_get_content(params, req)

@@ -11,8 +11,6 @@ module LabWiki::Plugin::Topology
       post "users/#{URI::encode user}", speaks_for: speaks_for
     end
 
-    protected
-
     def get(path, query = {}, &callback)
       _call(:aget, path, query: query, &callback)
     end
@@ -20,6 +18,8 @@ module LabWiki::Plugin::Topology
     def post(path, body = '', &callback)
       _call(:apost, path, body: body, &callback)
     end
+
+    protected
 
     def _call(action, path, params, &callback)
       Fiber.new do
