@@ -5,6 +5,9 @@ end
 
 require 'labwiki/plugin/topology/topology_editor_widget'
 require 'labwiki/plugin/topology/slice_monitor_widget'
+require 'labwiki/plugin/topology/slice_service_proxy'
+
+LabWiki::Plugin::Topology::SliceServiceProxy.instance # Validate configuration
 
 OMF::Web::ContentRepository.register_mime_type(gjson: 'text/topology')
 
@@ -45,10 +48,9 @@ LabWiki::PluginManager.register :topology, {
   global_js: 'js/topology_editor_global.js',
 
   on_authorised: lambda do
-    puts ">>>>>>>> ON_AUTH"
     speaks_for = OMF::Web::SessionStore[:speak_for, :user]
-    File.open('/tmp/speaks_for.xml', 'w') {|f| f.write(speaks_for) }
-    puts speaks_for
+    user = OMF::Web::SessionStore[:urn, :user]
+    LabWiki::Plugin::Topology::SliceServiceProxy.instance.speaks_for_user(user, speaks_for)
   end
 
 }
