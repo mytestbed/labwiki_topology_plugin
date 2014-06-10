@@ -9,7 +9,7 @@ module LabWiki::Plugin::Topology
   class TopologyEditorWidget < LabWiki::ColumnWidget
     attr_reader :topology_name
 
-    def initialize(column, config_opts, unused)
+    def initialize(column, config_opts, opts)
       unless column == :prepare || column == :execute
         raise "Should only be used in ':prepare' or ':execute' column"
       end
@@ -65,7 +65,6 @@ module LabWiki::Plugin::Topology
 
       raise "Undefined @url" unless @url
       @topology_descr = @is_new ? nil : @repo.read(@url)
-      TopologyEditorRenderer.new(self, topology_descr)
       case @column
       when :prepare
         TopologyEditorRenderer.new(self, @topology_descr)
