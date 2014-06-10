@@ -3,3 +3,6 @@ labwiki:
   plugins:
     topology:
       plugin_dir: labwiki_topology_editor
+      slice_service:
+        url: http://localhost:8006
+
