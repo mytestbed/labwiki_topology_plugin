@@ -15,7 +15,7 @@ module LabWiki::Plugin::Topology
     end
 
     def content
-      link :href => 'plugin/topology/css/graph_editor.css', :rel => "stylesheet", :type => "text/css"
+      link :href => 'resource/plugin/topology/css/graph_editor.css', :rel => "stylesheet", :type => "text/css"
       @wid = "w#{@widget.object_id}"
       graph_id = @wid + '_graph'
 
@@ -26,6 +26,7 @@ module LabWiki::Plugin::Topology
       div :class => "slice_monitor", :id => @wid do
         div :id => graph_id, :class => 'graph_editor', :contenteditable => "true"
       end
+      # FIXME this needs to be converted to requirejs.
       javascript %{
         if (typeof(LW.plugin.topology) == "undefined") LW.plugin.topology = {}; // shouldn't need this here
 
