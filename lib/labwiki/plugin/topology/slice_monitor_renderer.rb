@@ -36,6 +36,12 @@ module LabWiki::Plugin::Topology
       }
     end
 
+    def title_info
+      {
+        img_src: "/resource/plugin/topology/img/topology-no-edit-32.png",
+        title: @widget.title,
+        sub_title: "based on #{@widget.content_url}"
+      }
+    end
   end
-
 end # module

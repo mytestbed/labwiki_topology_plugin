@@ -41,16 +41,21 @@ module LabWiki::Plugin::Topology
       @slice_requested = true
     end
 
+    def on_get_content(params, req)
+      super(params, req)
+      @slice_requested = false
+    end
+
     def content_renderer()
       debug "content_renderer: #{@opts.inspect}"
       OMF::Web::Theme.require 'slice_monitor_renderer'
 
       @content_url = @content_opts[:url]
       content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(@content_url, @content_opts)
-      topology_descr = JSON.parse(content_proxy.content)
+      @topology_descr = JSON.parse(content_proxy.content)
 
       if @slice_requested
-        ropts = {editable: false, topology: topology_descr, health_ds: @ds_name}
+        ropts = {editable: false, topology: @topology_descr, health_ds: @ds_name}
         SliceMonitorRenderer.new(self, @health_ds_proxy, ropts)
       else
         SliceSetupRenderer.new(self, @topology_descr)
@@ -63,7 +68,7 @@ module LabWiki::Plugin::Topology
 
     def title
       #@experiment ? (@experiment.name || 'NEW') : 'No Experiment'
-      "Slice #{self.object_id}"
+      "Monitor slice #{self.object_id}"
     end
 
   end # class
