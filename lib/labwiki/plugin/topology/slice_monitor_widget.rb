@@ -1,5 +1,6 @@
 require 'labwiki/column_widget'
 require 'labwiki/plugin/topology/slice_monitor_renderer'
+require 'labwiki/plugin/topology/slice_setup_renderer'
 require 'omf_oml/table'
 require 'omf_oml/indexed_table'
 
@@ -13,6 +14,7 @@ module LabWiki::Plugin::Topology
       super column, :type => :slice_monitor
       #puts ">>>> SLICE MONITOR #{config_opts}"
       @topology = nil
+      @slice_requested = false
 
       @ds_name = "slice_monitor_#{self.object_id}"
       @health_table = OMF::OML::OmlIndexedTable.new @ds_name, :uuid, [:uuid, :type, :health]
@@ -32,17 +34,27 @@ module LabWiki::Plugin::Topology
       end
     end
 
+    def on_new_slice(params, req)
+      SliceServiceProxy.instance.post('/slices', name: params[:name], topology: @topology_descr) do |response|
+        info "Slice created: #{response}"
+      end
+      @slice_requested = true
+    end
 
     def content_renderer()
       debug "content_renderer: #{@opts.inspect}"
       OMF::Web::Theme.require 'slice_monitor_renderer'
 
-      content_url = @content_opts[:url]
-      content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(content_url, @content_opts)
+      @content_url = @content_opts[:url]
+      content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(@content_url, @content_opts)
       topology_descr = JSON.parse(content_proxy.content)
 
-      ropts = {editable: false, topology: topology_descr, health_ds: @ds_name}
-      SliceMonitorRenderer.new(self, @health_ds_proxy, ropts)
+      if @slice_requested
+        ropts = {editable: false, topology: topology_descr, health_ds: @ds_name}
+        SliceMonitorRenderer.new(self, @health_ds_proxy, ropts)
+      else
+        SliceSetupRenderer.new(self, @topology_descr)
+      end
     end
 
     def mime_type
@@ -53,7 +65,6 @@ module LabWiki::Plugin::Topology
       #@experiment ? (@experiment.name || 'NEW') : 'No Experiment'
       "Slice #{self.object_id}"
     end
-
 
   end # class
 

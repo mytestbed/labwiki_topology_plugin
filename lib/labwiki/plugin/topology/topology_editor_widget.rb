@@ -1,6 +1,5 @@
 require 'labwiki/column_widget'
 require 'labwiki/plugin/topology/topology_editor_renderer'
-require 'labwiki/plugin/topology/slice_setup_renderer'
 
 module LabWiki::Plugin::Topology
 
@@ -10,8 +9,8 @@ module LabWiki::Plugin::Topology
     attr_reader :topology_name, :slice_requested
 
     def initialize(column, config_opts, opts)
-      unless column == :prepare || column == :execute
-        raise "Should only be used in ':prepare' or ':execute' column"
+      unless column == :prepare
+        raise "Should only be used in ':prepare' column"
       end
       super column, :type => :topology
       #puts ">>>> EDITOR: #{config_opts} - #{opts}"
@@ -51,14 +50,6 @@ module LabWiki::Plugin::Topology
       nil
     end
 
-    # TODO Slice related actions could be moved slice monitor?
-    def on_new_slice(params, req)
-      SliceServiceProxy.instance.post('/slices', name: params[:name], topology: @topology_descr) do |response|
-        info "Slice created: #{response}"
-      end
-      @slice_requested = true
-    end
-
     def on_get_content(params, req)
       debug "on_get_content: #{params}"
       @content_url = params[:url]
@@ -73,12 +64,7 @@ module LabWiki::Plugin::Topology
 
       raise "Undefined @url" unless @url
       @topology_descr = @is_new ? nil : @repo.read(@url)
-      case @column
-      when :prepare
-        TopologyEditorRenderer.new(self, @topology_descr)
-      when :execute
-        SliceSetupRenderer.new(self, @topology_descr)
-      end
+      TopologyEditorRenderer.new(self, @topology_descr)
     end
 
     def mime_type

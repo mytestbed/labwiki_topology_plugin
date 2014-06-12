@@ -35,7 +35,7 @@ LabWiki::PluginManager.register :topology, {
       :priority => lambda do |opts|
         (opts[:mime_type] == 'topology') ? 200 : nil
       end,
-      :widget_class => LabWiki::Plugin::Topology::TopologyEditorWidget,
+      :widget_class => LabWiki::Plugin::Topology::SliceMonitorWidget,
       :handle_mime_type => 'topology'
     }
   ],

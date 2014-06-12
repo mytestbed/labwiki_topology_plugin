@@ -18,6 +18,11 @@ module LabWiki::Plugin::Topology
       link :href => 'plugin/topology/css/graph_editor.css', :rel => "stylesheet", :type => "text/css"
       @wid = "w#{@widget.object_id}"
       graph_id = @wid + '_graph'
+
+      div class: 'alert alert-info' do
+        text 'Your slice request has been sent to slice authority service'
+      end
+
       div :class => "slice_monitor", :id => @wid do
         div :id => graph_id, :class => 'graph_editor', :contenteditable => "true"
       end

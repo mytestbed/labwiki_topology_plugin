@@ -10,22 +10,21 @@ module LabWiki::Plugin::Topology
     end
 
     def content
-      if @widget.slice_requested.nil?
-        div class: 'lw-form' do
-          form role: 'form', id: 'setup-slice-form-execute', method: 'POST' do
-            div class: 'form-group' do
-              label for: 'slice' do
-                text 'Slice'
-              end
-              input class: 'form-control', placeholder: 'Slice name', required: true, name: 'slice'
+      div class: 'lw-form' do
+        form role: 'form', id: 'setup-slice-form-execute', method: 'POST' do
+          div class: 'form-group' do
+            label for: 'slice' do
+              text 'Slice'
             end
+            input class: 'form-control', placeholder: 'Slice name', required: true, name: 'slice'
+          end
 
-            button type: 'submit', class: 'btn btn-default' do
-              text 'Submit'
-            end
+          button type: 'submit', class: 'btn btn-default' do
+            text 'Submit'
           end
         end
-        javascript %{
+      end
+      javascript %{
           $('#setup-slice-form-execute').submit(function(event) {
             var opts = {
               action: 'new_slice',
@@ -38,19 +37,14 @@ module LabWiki::Plugin::Topology
             LW.execute_controller.refresh_content(opts, 'POST');
             event.preventDefault();
           });
-        }
-      else
-        div class: 'alert alert-info' do
-          text 'Your slice request has been sent to slice authority service'
-        end
-      end
+      }
     end
 
     def title_info
       {
         img_src: "/resource/plugin/topology/img/topology-no-edit-32.png",
-        title: "Set up slice",
-        sub_title: "based on #{@widget.sub_title}"
+        title: "New slice",
+        sub_title: "based on #{@widget.content_url}"
       }
     end
   end
