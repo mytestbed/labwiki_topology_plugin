@@ -7,15 +7,13 @@ module LabWiki::Plugin::Topology
   class TopologyEditorRenderer < Erector::Widget
     include OMF::Base::Loggable
 
-    def initialize(widget, topology_descr, opts = {})
+    def initialize(widget, opts = {})
       super opts
       @opts = {editable: true}.merge(opts)
-      @opts[:topology] = topology_descr
       @opts[:topology_name] = widget.topology_name
       @wid = @opts[:wid] = "w#{widget.object_id}"
+
       @widget = widget
-      #@topology_descr = topology_descr
-      #puts "CONTENT>>>> #{opts.inspect}"
     end
 
     def content
@@ -29,7 +27,7 @@ module LabWiki::Plugin::Topology
       end
       javascript %{
         require(['plugin/topology/js/topology_editor'], function(topo_editor) {
-          var w = topo_editor($('##{@wid}'), #{@opts.to_json});
+          var w = topo_editor($('##{@wid}'), LW.execute_controller, #{@opts.to_json});
         });
       }
     end

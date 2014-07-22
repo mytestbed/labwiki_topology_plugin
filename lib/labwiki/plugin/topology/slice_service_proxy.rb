@@ -6,6 +6,7 @@ module LabWiki::Plugin::Topology
 
   class SliceServiceProxy < OMF::Base::LObject
     include Singleton
+    attr_reader :report_problems_to
 
     def speaks_for_user(user, speaks_for)
       post "users/#{URI::encode user}", speaks_for: speaks_for
@@ -19,6 +20,10 @@ module LabWiki::Plugin::Topology
       _call(:apost, path, body: body, &callback)
     end
 
+    def healthy?
+      @healthy
+    end
+
     protected
 
     def _call(action, path, params, &callback)
@@ -29,16 +34,22 @@ module LabWiki::Plugin::Topology
           http = EventMachine::HttpRequest.new(@url).send(action, params)
           http.callback do
             begin
-              callback.call(JSON.parse(http.response)) if callback
+              callback.call(:ok, JSON.parse(http.response)) if callback
             rescue => ex
               warn "Exception while processing reply from slice service - #{ex}"
             end
           end
           http.errback do
-            warn "Call to Slice Service failed #{http.error}"
+            warn "Calling '#{path}' on Slice Service '#{@url}' failed - #{http.error}"
+            begin
+              callback.call(:error, http.response) if callback
+            rescue => ex
+              warn "Exception while processing error from slice service - #{ex}"
+            end
           end
         rescue => ex
           warn "Exception while calling slice service - #{ex}"
+          debug ex.backtrace.join("\n\t")
         end
       end.resume
     end
@@ -50,6 +61,7 @@ module LabWiki::Plugin::Topology
           yield
         end
         info "Using slice service '#{reply['version']}'"
+        @healthy = true
       end
     end
 
@@ -60,6 +72,8 @@ module LabWiki::Plugin::Topology
       unless @url = @opts[:url]
         raise "Can't find url for Slice Service 'plugins/topology/slice_service/url'"
       end
+      @healthy = false
+      @report_problems_to = @opts[:report_problems_to]
       EventMachine.next_tick { _check_service }
       #speaks_for_user('max+ott', "<xml></xml>")
     end

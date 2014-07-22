@@ -1,6 +1,4 @@
 require 'labwiki/column_widget'
-require 'labwiki/plugin/topology/slice_monitor_renderer'
-require 'labwiki/plugin/topology/slice_setup_renderer'
 require 'omf_oml/table'
 require 'omf_oml/indexed_table'
 
@@ -10,16 +8,25 @@ module LabWiki::Plugin::Topology
   #
   class SliceMonitorWidget < LabWiki::ColumnWidget
 
-    def initialize(column, config_opts, unused)
-      super column, :type => :slice_monitor
-      #puts ">>>> SLICE MONITOR #{config_opts}"
-      @topology = nil
-      @slice_requested = false
+    attr_reader :topology, :topology_url, :slice_name, :health_ds_name
+    renderer :topology_slice_monitor_renderer
 
-      @ds_name = "slice_monitor_#{self.object_id}"
-      @health_table = OMF::OML::OmlIndexedTable.new @ds_name, :uuid, [:uuid, :type, :health]
+    def initialize(column, config_opts, opts)
+      super column, :type => :slice_monitor
+      debug "new: #{opts}"
+      puts ">>>> SLICE MONITOR #{opts} -- cfg: #{config_opts}"
+      unless @content_url = @topology_url = opts[:url]
+        raise "Expected 'url' in opts - #{opts}"
+      end
+      content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(@content_url, opts)
+      @topology = JSON.parse(content_proxy.content)
+      @slice_name = opts[:slice_name]
+
+      @health_ds_name = "slice_monitor_#{self.object_id}"
+      @health_table = OMF::OML::OmlIndexedTable.new @health_ds_name, :uuid, [:uuid, :type, :health]
       OMF::Web::DataSourceProxy.register_datasource @health_table
-      @health_ds_proxy = OMF::Web::DataSourceProxy.for_source(name: @ds_name)[0]
+      @health_ds_proxy = OMF::Web::DataSourceProxy.for_source(name: @health_ds_name)[0]
+
 
       Thread.new do
         begin
@@ -35,41 +42,43 @@ module LabWiki::Plugin::Topology
     end
 
     def on_new_slice(params, req)
-      SliceServiceProxy.instance.post('/slices', name: params[:name], topology: @topology_descr) do |response|
-        info "Slice created: #{response}"
+      @slice_name = params[:name]
+      SliceServiceProxy.instance.post('/slices', name: @slice_name, topology: @topology) do |status, response|
+        info "Slice request: #{status} - #{response}"
       end
       @slice_requested = true
     end
 
-    def on_get_content(params, req)
-      super(params, req)
-      @slice_requested = false
-    end
-
-    def content_renderer()
-      debug "content_renderer: #{@opts.inspect}"
-      OMF::Web::Theme.require 'slice_monitor_renderer'
-
-      @content_url = @content_opts[:url]
-      content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(@content_url, @content_opts)
-      @topology_descr = JSON.parse(content_proxy.content)
-
-      if @slice_requested
-        ropts = {editable: false, topology: @topology_descr, health_ds: @ds_name}
-        SliceMonitorRenderer.new(self, @health_ds_proxy, ropts)
-      else
-        SliceSetupRenderer.new(self, @topology_descr)
-      end
-    end
+    # def on_get_content(params, req)
+      # super(params, req)
+      # @slice_requested = false
+    # end
+#
+    # def content_renderer()
+      # debug "content_renderer: #{@opts.inspect}"
+#
+      # @content_url = @content_opts[:url]
+      # content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(@content_url, @content_opts)
+      # @topology_descr = JSON.parse(content_proxy.content)
+#
+      # ropts = {editable: false, topology: @topology_descr}
+      # if @slice_requested
+        # ropts[:health_ds] = @ds_name
+        # ropts[:health_ds_proxy] = @health_ds_proxy
+        # OMF::Web::Theme.create_renderer(:topology_slice_monitor_renderer, self, ropts)
+      # else
+        # OMF::Web::Theme.create_renderer(:topology_slice_setup_renderer, self, ropts)
+      # end
+    # end
 
     def mime_type
       'slice_monitor'
     end
 
-    def title
-      #@experiment ? (@experiment.name || 'NEW') : 'No Experiment'
-      "Monitor slice #{self.object_id}"
-    end
+    # def title
+      # #@experiment ? (@experiment.name || 'NEW') : 'No Experiment'
+      # "Monitor Slice '#{@slice_name || 'Unknown'}'"
+    # end
 
   end # class
 
