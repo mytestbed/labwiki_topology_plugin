@@ -8,8 +8,8 @@ module LabWiki::Plugin::Topology
     include Singleton
     attr_reader :report_problems_to
 
-    def speaks_for_user(user, speaks_for)
-      post "users/#{URI::encode user}", speaks_for: speaks_for
+    def speaks_for_user(user, speaks_for, &callback)
+      post "users/#{URI::encode user}", { speaks_for: speaks_for }, &callback
     end
 
     def get(path, query = {}, &callback)
@@ -40,9 +40,17 @@ module LabWiki::Plugin::Topology
             end
           end
           http.errback do
-            warn "Calling '#{path}' on Slice Service '#{@url}' failed - #{http.error}"
             begin
-              callback.call(:error, http.response) if callback
+              err_reply = JSON.parse(http.response)
+              if err_reply["type"] == "retry"
+                # Retry if reply indicated so
+                EM.add_timer(err_reply["delay"].to_i) do
+                  _call(action, path, params, &callback)
+                end
+              else
+                warn "Calling '#{path}' on Slice Service '#{@url}' failed - #{http.error}"
+                callback.call(:error, reply) if callback
+              end
             rescue => ex
               warn "Exception while processing error from slice service - #{ex}"
             end
@@ -55,7 +63,7 @@ module LabWiki::Plugin::Topology
     end
 
     def _check_service
-      get 'version' do |reply|
+      get 'version' do |status, reply|
         unless reply['service'] == 'SliceService'
           error "Seem to be connected to wrong service - #{reply}"
           yield

@@ -73,7 +73,14 @@ LabWiki::PluginManager.register :topology, {
   on_authorised: lambda do
     speaks_for = OMF::Web::SessionStore[:speak_for, :user]
     user = OMF::Web::SessionStore[:id, :user]
+
     LabWiki::Plugin::Topology::SliceServiceProxy.instance.speaks_for_user(user, speaks_for)
+
+    LabWiki::Plugin::Topology::SliceServiceProxy.instance.get("users/#{user}/slice_members") do |status, reply|
+      if status == :ok
+        OMF::Web::SessionStore[:slices, :user] = reply
+      end
+    end
   end
 
 }
