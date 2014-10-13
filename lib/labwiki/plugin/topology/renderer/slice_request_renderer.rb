@@ -2,11 +2,13 @@ module LabWiki::Plugin::Topology
   class SliceRequestRenderer < Erector::Widget
     include OMF::Base::Loggable
 
-    def initialize(widget, opts = {})
-      super opts
+    def initialize(widget, unused)
       @widget = widget
-      @opts = opts
-      #@opts[:topology] = topology_descr
+      @opts = {
+        slice_names_ds_name: widget.slice_names_ds_name,
+        topology: widget.topology
+      }
+      super @opts
     end
 
     def content
@@ -29,34 +31,39 @@ module LabWiki::Plugin::Topology
         return
       end
 
-      div class: 'lw-form' do
-        form role: 'form', id: 'setup-slice-form-execute', method: 'POST' do
-          div class: 'form-group' do
-            label for: 'slice' do
-              text 'Slice'
+      @wid = "w#{@widget.object_id}"
+      div :class => "slice_request", :id => @wid do
+        div class: 'lw-form' do
+          form role: 'form', class: 'setup-slice-form-execute', method: 'POST' do
+            div class: 'form-group' do
+              label for: 'slice_name' do
+                text 'Slice Name'
+              end
+              input class: 'form-control', placeholder: 'Slice name', required: true, name: 'slice_name'
             end
-            input class: 'form-control', placeholder: 'Slice name', required: true, name: 'slice'
-          end
-
-          button type: 'submit', class: 'btn btn-default' do
-            text 'Request Slice'
+            div class: 'form-group' do
+              label for: 'existing_sliced' do
+                text 'Existing Slices'
+              end
+              select class: 'form-control', name: 'existing_slices' do
+                option '---', value: '---'
+              end
+            end
+            div class: 'sliver-destroy-warning bg-danger', style: 'display: none;' do
+              text "Warning! This will destroy existing resources in slice"
+            end
+            button type: 'submit', class: 'btn btn-primary', disabled: 'disabled' do
+              text 'Request Slice'
+            end
           end
         end
+        javascript %{
+          require(['plugin/topology/js/slice_request', 'omf/data_source_repo'], function(SliceRequest, ds) {
+            #{@widget.datasources.map {|ds| ds.to_javascript()}.join()}
+            SliceRequest(LW.execute_controller, #{@opts.to_json}).render($('##{@wid}'));
+          })
+        }
       end
-      javascript %{
-          $('#setup-slice-form-execute').submit(function(event) {
-            var opts = {
-              action: 'request_slice',
-              col: 'execute',
-              plugin: 'topology',
-              mime_type: 'text/topology',
-              name: $('#setup-slice-form-execute input[name="slice"]').val()
-            };
-
-            LW.execute_controller.refresh_content(opts, 'POST');
-            event.preventDefault();
-          });
-      }
     end
 
     def title_info

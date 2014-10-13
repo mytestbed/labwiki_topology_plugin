@@ -2,3 +2,9 @@
 .widget_body_slice_monitor .alert-danger {
   margin: 10px;
 }
+
+.sliver-destroy-warning {
+  padding: 10px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}

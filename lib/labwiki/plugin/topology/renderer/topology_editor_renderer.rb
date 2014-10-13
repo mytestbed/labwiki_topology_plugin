@@ -11,6 +11,8 @@ module LabWiki::Plugin::Topology
       super opts
       @opts = {editable: true}.merge(opts)
       @opts[:topology_name] = widget.topology_name
+      @opts[:aggregates] = SliceServiceProxy.instance.aggregates
+
       @wid = @opts[:wid] = "w#{widget.object_id}"
 
       @widget = widget
@@ -27,7 +29,7 @@ module LabWiki::Plugin::Topology
       end
       javascript %{
         require(['plugin/topology/js/topology_editor'], function(topo_editor) {
-          var w = topo_editor($('##{@wid}'), LW.execute_controller, #{@opts.to_json});
+          var w = topo_editor($('##{@wid}'), LW.prepare_controller, #{@opts.to_json});
         });
       }
     end

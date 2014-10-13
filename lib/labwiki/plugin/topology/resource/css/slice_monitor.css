@@ -1,0 +1,32 @@
+
+div.graph_editor .link_unknown {
+    stroke: gray;
+}
+
+div.graph_editor .link_up {
+    stroke: green;
+}
+
+div.graph_editor .link_down {
+    stroke: red;
+}
+
+div.graph_editor .node_unknown {
+    stroke-width: 1.5px;
+    stroke: gray;
+}
+
+div.graph_editor .node_provisioned {
+    stroke-width: 1.5px;
+    stroke: blue;
+}
+
+div.graph_editor .node_up {
+    stroke-width: 2.5px;
+    stroke: green;
+}
+
+div.graph_editor .node_down {
+    stroke-width: 2.5px;
+    stroke: red;
+}

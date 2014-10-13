@@ -5,4 +5,5 @@ labwiki:
       plugin_dir: labwiki_topology_editor
       slice_service:
         url: http://localhost:8006
+        report_problems_to: mailto:max@mytestbed.net
 

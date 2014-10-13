@@ -68,7 +68,7 @@ module LabWiki::Plugin::Topology
       @content_url = @url
       @topology_name = (params[:name] || params[:url]).gsub(/\.gjson/, '').split('/').last
       if (@is_new)
-        @topology_descr = {}
+        @topology_descr = {graph: {}}
       else
         @content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(params[:url], params)
         @topology_descr = JSON.parse(@content_proxy.content)
@@ -88,7 +88,7 @@ module LabWiki::Plugin::Topology
     end
 
     def mime_type
-      'topology'
+      'text/topology'
     end
 
     def title

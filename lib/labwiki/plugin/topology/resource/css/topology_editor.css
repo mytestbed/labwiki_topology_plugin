@@ -114,3 +114,8 @@ div.topology_editor ol.widget_toolbar li.cmd_add_node a {
   background-size: 16px 16px;
 }
 
+/*** FORM BUILDER ***/
+
+.lw-form .shows-def-value {
+    color: #aaa;
+}
