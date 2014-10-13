@@ -85,11 +85,11 @@ LabWiki::PluginManager.register :topology, {
 
     LabWiki::Plugin::Topology::SliceServiceProxy.instance.speaks_for_user(user, speaks_for)
 
-    LabWiki::Plugin::Topology::SliceServiceProxy.instance.get("users/#{user}/slice_members") do |status, reply|
-      if status == :ok
-        OMF::Web::SessionStore[:slices, :user] = reply
-      end
-    end
+    # LabWiki::Plugin::Topology::SliceServiceProxy.instance.get("users/#{user}/slice_members") do |status, reply|
+    #   if status == :ok
+    #     OMF::Web::SessionStore[:slices, :user] = reply
+    #   end
+    # end
   end
 
 }
