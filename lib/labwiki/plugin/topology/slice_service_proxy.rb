@@ -154,13 +154,19 @@ module LabWiki::Plugin::Topology
             end
           end
           http.errback do
-            session_ctxt.call do # restore original session context
-              warn "Calling '#{path}' on Slice Service '#{@url}' failed - #{http.error}"
-              begin
-                callback.call(:error, http.response) if callback
-              rescue => ex
-                warn "Exception while processing error from slice service - #{ex}"
+            begin
+              err_reply = JSON.parse(http.response)
+              if err_reply["type"] == "retry"
+                # Retry if reply indicated so
+                EM.add_timer(err_reply["delay"].to_i) do
+                  _call(action, path, params, &callback)
+                end
+              else
+                warn "Calling '#{path}' on Slice Service '#{@url}' failed - #{http.error}"
+                callback.call(:error, reply) if callback
               end
+            rescue => ex
+              warn "Exception while processing error from slice service - #{ex}"
             end
           end
         rescue => ex
