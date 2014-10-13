@@ -82,6 +82,13 @@ module LabWiki::Plugin::Topology
       @aggregates
     end
 
+    # Return true if user is authorised or not (call callback with boolean as well)
+    def user_authorised?(&callback)
+      authorised = false
+      callback.call(authorised) if callback
+      authorised
+    end
+
     def get(path, query = {}, &callback)
       _call(:aget, path, query: query, &callback)
     end
