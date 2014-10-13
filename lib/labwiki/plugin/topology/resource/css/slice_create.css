@@ -1,0 +1,39 @@
+
+
+/** Toolbar ***/
+
+.btn-stop-slice, .btn-dump {
+  margin: 7px 0 7px 7px;
+}
+
+/*** BODY *****/
+div.slice-status{
+  padding-top: 20px;
+  padding-left: 20px;
+}
+
+/*** Properties ***/
+div.slice-status span.undefined {
+  font-style: oblique;
+}
+
+div.slice-status td.desc {
+  min-width: 60px;
+}
+
+/*** progress messages ***/
+table.slice-progress {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+table.slice-progress tr td,
+table.slice-progress tr {
+  padding: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  line-height: 1.4;
+  border: 0px;
+}
+
+
