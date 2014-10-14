@@ -11,8 +11,9 @@ module LabWiki::Plugin::Topology
         topology: widget.topology,
         topology_url: widget.topology_url,
         health_ds_name: widget.health_ds_name,
-        topology_ds_name: widget.topology_ds_name,
-        slice_name: @slice_name
+        #topology_ds_name: widget.topology_ds_name,
+        slice_name: @slice_name,
+        widget_id: widget.widget_id
       }
       @widget = widget
       super @opts

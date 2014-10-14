@@ -7,6 +7,7 @@ module LabWiki::Plugin::Topology
   # Monitors the state of a slice
   #
   class SliceMonitorWidget < LabWiki::ColumnWidget
+    TOPOLOGY_CHECK_INTERVAL = 30
 
     attr_reader :topology, :topology_url, :slice_name, :health_ds_name, :topology_ds_name
     renderer :topology_slice_monitor_renderer
@@ -19,10 +20,10 @@ module LabWiki::Plugin::Topology
       @topology = nil
 
       # TODO: We should really find a simpler solution to push one off data to browser
-      @topology_ds_name = ttn = "slice_monitor_topo_#{self.object_id}"
-      @topology_table = OMF::OML::OmlTable.new ttn, [:status, :topology]
-      OMF::Web::DataSourceProxy.register_datasource @topology_table rescue warn $!
-      @topology_ds_proxy = OMF::Web::DataSourceProxy.for_source(name: @topology_ds_name)[0]
+      # @topology_ds_name = ttn = "slice_monitor_topo_#{self.object_id}"
+      # @topology_table = OMF::OML::OmlTable.new ttn, [:status, :topology]
+      # OMF::Web::DataSourceProxy.register_datasource @topology_table rescue warn $!
+      # @topology_ds_proxy = OMF::Web::DataSourceProxy.for_source(name: @topology_ds_name)[0]
 
 
 
@@ -55,14 +56,34 @@ module LabWiki::Plugin::Topology
       desc = params[:descriptor]
       puts ">>>>>> #{desc}"
 
-      unless slice_url = desc[:slice_url]
+      unless @slice_url = desc[:slice_url]
         raise "Expected 'slice_url' in descriptor - #{desc}"
       end
 
-      SliceServiceProxy.instance.get(slice_url + '/topology') do |status, reply|
-        next unless status == :ok
-        @topology_table << [status, reply]
-        report_health_from_topology(reply)
+      # Kickstart initial topology collection
+      on_get_topology(params, req)
+
+      # SliceServiceProxy.instance.get(@slice_url + '/topology') do |status, reply|
+      #   next unless status == :ok
+      #   @topology_table << [status, reply]
+      #   report_health_from_topology(reply)
+      # end
+    end
+
+    def on_get_topology(params, req)
+      puts "REQUEST FOR TOPOLOGY - #{@slice_url}"
+
+      if @topology_checked_at.nil? || (Time.now - @topology_checked_at) > TOPOLOGY_CHECK_INTERVAL
+        @topology_checked_at = Time.now
+        SliceServiceProxy.instance.get(@slice_url + '/topology') do |status, reply|
+          next unless status == :ok
+          #@topology_table << [status, reply]
+          @topology = reply
+          report_health_from_topology(reply)
+        end
+        {code: 504, delay: 10}
+      else
+        {code: 200, topology: @topology}
       end
     end
 
@@ -100,7 +121,8 @@ module LabWiki::Plugin::Topology
     # widget renderer.
     #
     def datasources
-      [@topology_ds_proxy, @health_ds_proxy]
+      #[@topology_ds_proxy, @health_ds_proxy]
+      [@health_ds_proxy]
     end
 
     # def on_new_slice(params, req)
