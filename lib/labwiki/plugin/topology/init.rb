@@ -29,9 +29,9 @@ LabWiki::PluginManager.register :topology, {
         puts ">>> PRIORITY FOR #{opts}"
         (opts[:plugin] == "topology" || opts[:url].end_with?('.gjson')) ? 500 : nil
       end,
-      :search => lambda do |pat, opts, wopts|
+      :search => lambda do |pat, opts, wopts, &cbk|
         opts[:mime_type] = 'text/topology'
-        OMF::Web::ContentRepository.find_files(pat, opts)
+        OMF::Web::ContentRepository.find_files(pat, opts, &cbk)
       end,
       :widget_class => LabWiki::Plugin::Topology::TopologyEditorWidget,
       :handle_mime_type => 'text/topology'
@@ -42,10 +42,10 @@ LabWiki::PluginManager.register :topology, {
       :priority => lambda do |opts|
         (opts[:mime_type] == 'text/topology') ? 900 : nil
       end,
-      :search => lambda do |pat, opts, wopts|
-        #opts[:mime_type] = 'text/topology'
-        #LabWiki::Plugin::Topology::ExperimentSearchProxy.instance.find(pat, opts, wopts)
-      end,
+      # :search => lambda do |pat, opts, wopts|
+      #   #opts[:mime_type] = 'text/topology'
+      #   #LabWiki::Plugin::Topology::ExperimentSearchProxy.instance.find(pat, opts, wopts)
+      # end,
       :widget_class => LabWiki::Plugin::Topology::SliceRequestWidget,
       :handle_mime_type => 'text/topology'
     },
@@ -56,9 +56,10 @@ LabWiki::PluginManager.register :topology, {
         # (opts[:mime_type] == 'topology') ? 200
           # : ((opts[:url].end_with? '.gjson') ? 500 : nil)
       # end,
-      :search => lambda do |pat, opts, wopts|
+      :search => lambda do |pat, opts, wopts, &cbk|
+        puts ">>SEARCH SLICE>>> #{cbk}"
         opts[:mime_type] = 'application/topology'
-        LabWiki::Plugin::Topology::SliceServiceProxy.instance.find_slice(pat, opts, wopts)
+        LabWiki::Plugin::Topology::SliceServiceProxy.instance.find_slice(pat, opts, wopts, &cbk)
       end,
       :widget_class => LabWiki::Plugin::Topology::SliceMonitorWidget,
       :handle_mime_type => 'topology'

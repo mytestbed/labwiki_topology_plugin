@@ -14,25 +14,24 @@ module LabWiki::Plugin::Topology
 
     @@slice_memberships_for_users = {}
 
-    def find_slice(pattern, opts, wopts)
-      unless memberships = slice_memberships
-        raise LabWiki::RetrySearchLaterException.new
-      end
+    def find_slice(pattern, opts, wopts, &cbk)
+      slice_memberships do |status, memberships|
+        next unless status == :ok
 
-      regex = Regexp.new(pattern)
-      result = memberships.map do |sm|
-        # "slice_urn"=>"urn:publicid:IDN+ch.geni.net:max_mystery_project+slice+foo96", "role"=>"LEAD", "href"=>"..."
-        slice_urn = sm['slice_urn']
-        name = slice_urn.split('+')[-1]
-        next unless (name =~ regex)
-        slice_url = URI.parse(sm['href']).path + '/slice'
-        {
-          #url: r["href"], name: r["name"], status: r['status'],
-          slice_url: slice_url, name: "Slice #{name}",
-          mime_type: 'slice', widget: 'slice_monitor' #, plugin: 'experiment'
-        }
-      end.compact
-      result
+        regex = Regexp.new(pattern)
+        memberships.each do |sm|
+          # "slice_urn"=>"urn:publicid:IDN+ch.geni.net:max_mystery_project+slice+foo96", "role"=>"LEAD", "href"=>"..."
+          slice_urn = sm['slice_urn']
+          name = slice_urn.split('+')[-1]
+          next unless (name =~ regex)
+          slice_url = URI.parse(sm['href']).path + '/slice'
+          cbk.call({
+            #url: r["href"], name: r["name"], status: r['status'],
+            slice_url: slice_url, name: "Slice #{name}",
+            mime_type: 'slice', widget: 'slice_monitor' #, plugin: 'experiment'
+          })
+        end
+      end
     end
 
     # Return an array of slice memberships for the logged in user.
