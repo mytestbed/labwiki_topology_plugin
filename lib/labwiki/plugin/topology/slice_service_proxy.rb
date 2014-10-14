@@ -1,6 +1,8 @@
 
 require 'singleton'
 require 'open-uri'
+require 'rexml/document'
+require 'rexml/xpath'
 
 module LabWiki::Plugin::Topology
 
@@ -84,6 +86,13 @@ module LabWiki::Plugin::Topology
     # Return true if user is authorised or not (call callback with boolean as well)
     def user_authorised?(&callback)
       authorised = false
+      begin
+        xml = REXML::Document.new(Net::HTTP.get(URI("#{@url}/speaks_fors/#{_user_urn}")))
+        expires = REXML::XPath.first(xml, "//credential/expires").text
+        authorised = Time.parse(expires) > Time.now
+      rescue
+        authorised = false
+      end
       callback.call(authorised) if callback
       authorised
     end
