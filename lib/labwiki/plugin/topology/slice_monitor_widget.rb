@@ -54,7 +54,7 @@ module LabWiki::Plugin::Topology
       debug "on_get_content: #{params}"
 
       desc = params[:descriptor]
-      puts ">>>>>> #{desc}"
+      #puts ">>>>>> #{desc}"
 
       unless @slice_url = desc[:slice_url]
         raise "Expected 'slice_url' in descriptor - #{desc}"
