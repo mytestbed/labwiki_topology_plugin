@@ -45,10 +45,14 @@ LabWiki::PluginManager.register :topology, {
       :priority => lambda do |opts|
         (opts[:mime_type] == 'text/topology') ? 900 : nil
       end,
-      # :search => lambda do |pat, opts, wopts|
-      #   #opts[:mime_type] = 'text/topology'
-      #   #LabWiki::Plugin::Topology::ExperimentSearchProxy.instance.find(pat, opts, wopts)
-      # end,
+      :search => lambda do |pat, opts, wopts, &cbk|
+        opts[:mime_type] = 'text/topology'
+        OMF::Web::ContentRepository.find_files(pat, opts) do |f|
+          f[:img_url] = "plugin/topology/img/topology-edit-16.png"
+          f[:widget] = 'slice_request'
+          cbk.call(f)
+        end
+      end,
       :widget_class => LabWiki::Plugin::Topology::SliceRequestWidget,
       :handle_mime_type => 'text/topology'
     },
@@ -62,7 +66,10 @@ LabWiki::PluginManager.register :topology, {
       :search => lambda do |pat, opts, wopts, &cbk|
         puts ">>SEARCH SLICE>>> #{cbk}"
         opts[:mime_type] = 'application/topology'
-        LabWiki::Plugin::Topology::SliceServiceProxy.instance.find_slice(pat, opts, wopts, &cbk)
+        LabWiki::Plugin::Topology::SliceServiceProxy.instance.find_slice(pat, opts, wopts) do |f|
+          f[:img_url] = "plugin/topology/img/topology-no-edit-16.png"
+          cbk.call(f)
+        end
       end,
       :widget_class => LabWiki::Plugin::Topology::SliceMonitorWidget,
       :handle_mime_type => 'topology'
@@ -70,7 +77,7 @@ LabWiki::PluginManager.register :topology, {
     {
       :name => 'topology/slice_create',
       :context => :execute,
-      :widget_class => LabWiki::Plugin::Topology::SliceCreateWidget,
+      :widget_class => LabWiki::Plugin::Topology::SliceCreateWidget
     }
 
   ],
