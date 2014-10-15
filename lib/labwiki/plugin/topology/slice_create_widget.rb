@@ -32,7 +32,6 @@ module LabWiki::Plugin::Topology
       topo = OMF::Web::ContentRepository.read_content(@topology_url, params)
       @slice_name = params[:slice_name]
 
-      progress_cnt = 0
       SliceServiceProxy.instance.slice_memberships do |status, memberships|
         # not sure how to deliver errors
         unless status == :ok
@@ -48,31 +47,71 @@ module LabWiki::Plugin::Topology
           sm[:slice_name] == @slice_name
         end
         if ssm
-          debug "Requesting sliver for: #{ssm}"
-          # SLice already exists, re-provision it
-          ms_path = URI.parse(ssm['href']).path
-          ms_uri = ms_path.split('/')[-1]
-          SliceServiceProxy.instance.request_slivers ms_uri, topo do |a, msg|
-            case a
-            when :progress
-              new_progress = msg[progress_cnt .. -1]
-              #puts "PROGRESS(#{progress_cnt})>>> #{msg.inspect} ----- #{new_progress}"
-              if new_progress
-                new_progress.each {|msg| @progress_table << ['progress', msg]}
-                progress_cnt = msg.length
-              end
-            when :ok
-              slice_path = ms_path + '/slice'
-              debug "Slivers created - #{slice_path}"
-              @progress_table << ['done', slice_path] # should trigger a move to slice monitor
-            else
-              @progress_table << [a, msg] # not sure what we do with this
-            end
-            #puts ">>>> REQUEST SLIVER - #{a} - #{msg}"
-          end
+          _request_sliver_for_existing_slice(ssm, topo, params)
+        else
+          _request_sliver_for_new_slice(@slice_name, topo, params)
         end
       end
     end
+
+    def _request_sliver_for_existing_slice(ssm, topo, params)
+      debug "Requesting sliver for: #{ssm}"
+      # SLice already exists, re-provision it
+      ms_path = URI.parse(ssm['href']).path
+      ms_uri = ms_path.split('/')[-1]
+      progress_cnt = 0
+      SliceServiceProxy.instance.request_slivers ms_uri, topo do |a, msg|
+        case a
+        when :progress
+          new_progress = msg[progress_cnt .. -1]
+          #puts "PROGRESS(#{progress_cnt})>>> #{msg.inspect} ----- #{new_progress}"
+          if new_progress
+            new_progress.each {|msg| @progress_table << ['progress', msg]}
+            progress_cnt = msg.length
+          end
+        when :ok
+          slice_path = ms_path + '/slice'
+          debug "Slivers created - #{slice_path}"
+          @progress_table << ['done', slice_path] # should trigger a move to slice monitor
+        else
+          @progress_table << [a, msg] # not sure what we do with this
+        end
+        #puts ">>>> REQUEST SLIVER - #{a} - #{msg}"
+      end
+    end
+
+    def _request_sliver_for_new_slice(slice_name, topo, params)
+      debug "Requesting new slice '#{slice_name}'"
+      progress_cnt = 0
+      @progress_table << ['progress', "CreateSliceTask started"]
+      SliceServiceProxy.instance.request_slice slice_name do |a, msg|
+        case a
+        when :progress
+          new_progress = msg[progress_cnt .. -1]
+          puts "PROGRESS(#{progress_cnt})>>> #{msg.inspect} ----- #{new_progress}"
+          if new_progress
+            new_progress.each {|msg| @progress_table << ['progress', msg]}
+            progress_cnt = msg.length
+          end
+        when :ok
+          debug "Slice created - #{msg}"
+          @progress_table << ['progress', "CreateSliceTask resolved"]
+          slice_member = msg
+          _request_sliver_for_existing_slice(slice_member, topo, params)
+        else
+          @progress_table << [a, msg] # not sure what we do with this
+        end
+      end
+    end
+
+    # def _report_progress(msg)
+    #   new_progress = msg[progress_cnt .. -1]
+    #   #puts "PROGRESS(#{progress_cnt})>>> #{msg.inspect} ----- #{new_progress}"
+    #   if new_progress
+    #     new_progress.each {|msg| @progress_table << ['progress', msg]}
+    #     progress_cnt = msg.length
+    #   end
+    # end
 
     # As widgets are dynamically added, we need register datasources from within the
     # widget renderer.

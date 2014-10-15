@@ -68,6 +68,23 @@ module LabWiki::Plugin::Topology
       end
     end
 
+    def request_slice slice_name, &callback
+      #puts "PROJECT>>>>> #{OMF::Web::SessionStore[:current_project, :user]}"
+      #puts "MORR PROJECT>>>> #{OMF::Web::SessionStore[:projects, :user]}"
+      project_uuid = OMF::Web::SessionStore[:current_project, :user]
+      project = OMF::Web::SessionStore[:projects, :user].find do |p|
+        p[:uuid] == project_uuid
+      end
+      debug "Requesting slice '#{slice_name}' for project : #{project}"
+      url = "/users/#{_user_urn}/slice_memberships"
+      opts = {
+        name: slice_name,
+        slice: slice_name,
+        project: project[:urn]
+      }
+      post url, opts.to_json, 'application/json', &callback
+    end
+
     def request_slivers slice_membership_uuid, resources, &callback
       url = "/users/#{_user_urn}/slice_memberships/#{slice_membership_uuid}/slice/resources"
       put url, resources, 'application/gjson', &callback
@@ -123,7 +140,8 @@ module LabWiki::Plugin::Topology
       session_ctxt = OMF::Web::SessionContext.new # preserve session for callback
       Fiber.new do
         begin
-          debug "#{action} #{@url}/#{path} - #{params}"[0 .. 80]
+          #debug "#{action} #{@url}/#{path} - #{params}"[0 .. 80]
+          debug "#{action} #{@url}/#{path}"
           params[:path] = path.to_s
           params[:redirects] ||= 1
           http = EventMachine::HttpRequest.new(@url).send(action, params)
