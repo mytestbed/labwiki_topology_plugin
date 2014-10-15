@@ -12,6 +12,10 @@ div.slice-status{
   padding-left: 20px;
 }
 
+.widget_body_slice_create h3 {
+  padding-left: 20px;
+}
+
 /*** Properties ***/
 div.slice-status span.undefined {
   font-style: oblique;
@@ -22,6 +26,8 @@ div.slice-status td.desc {
 }
 
 /*** progress messages ***/
+
+
 table.slice-progress {
     margin-top: 20px;
     margin-left: 20px;

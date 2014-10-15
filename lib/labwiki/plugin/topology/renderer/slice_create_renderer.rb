@@ -45,7 +45,8 @@ module LabWiki::Plugin::Topology
     end
 
     def render_progress
-      div 'Progress', class: 'slice-section'
+      #div 'Progress', class: 'slice-section'
+      h3 'Progress', class: 'slice-progress-section'
       div :class => 'slice-progress' do
         table :class => 'slice-progress'
       end

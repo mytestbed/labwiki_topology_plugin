@@ -1,7 +1,12 @@
 
-.widget_body_slice_monitor .alert-danger {
+.widget_body_slice_request .alert-danger {
   margin: 10px;
 }
+
+.widget_body_slice_request h3 {
+  padding-left: 20px;
+}
+
 
 .sliver-destroy-warning {
   padding: 10px;
