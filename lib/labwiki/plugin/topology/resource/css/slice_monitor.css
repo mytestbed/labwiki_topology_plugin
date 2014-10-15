@@ -33,6 +33,7 @@ div.graph_editor .node_up {
 div.graph_editor g.node_ready rect {
   stroke-width: 2.5px;
   stroke: green;
+  fill: #c2f0a8;
 }
 
 div.graph_editor .node_down {
