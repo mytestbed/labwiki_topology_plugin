@@ -25,19 +25,20 @@ div.graph_editor .link {
   //stroke: #000;
   stroke-width: 4px;
   cursor: pointer;
+  stroke: black;
 }
 
-div.graph_editor .link_unknown {
-  stroke: blue;
-}
+/*div.graph_editor .link_unknown {*/
+  /*stroke: blue;*/
+/*}*/
 
-div.graph_editor .link_up {
-  stroke: green;
-}
+/*div.graph_editor .link_up {*/
+  /*stroke: green;*/
+/*}*/
 
-div.graph_editor .link_down {
-  stroke: red;
-}
+/*div.graph_editor .link_down {*/
+  /*stroke: red;*/
+/*}*/
 
 div.graph_editor svg:not(.active):not(.ctrl) path.link {
   cursor: pointer;
@@ -58,22 +59,24 @@ div.graph_editor path.link.hidden {
 div.graph_editor .node {
   fill: white;
   cursor: pointer;
-}
-
-div.graph_editor .node_unknown {
   stroke-width: 1.5px;
-  stroke: blue;
+  stroke: black;
 }
 
-div.graph_editor .node_up {
-  stroke-width: 2.5px;
-  stroke: green;
-}
+/*div.graph_editor .node_unknown {*/
+  /*stroke-width: 1.5px;*/
+  /*stroke: blue;*/
+/*}*/
 
-div.graph_editor .node_down {
-  stroke-width: 2.5px;
-  stroke: red;
-}
+/*div.graph_editor .node_up {*/
+  /*stroke-width: 2.5px;*/
+  /*stroke: green;*/
+/*}*/
+
+/*div.graph_editor .node_down {*/
+  /*stroke-width: 2.5px;*/
+  /*stroke: red;*/
+/*}*/
 
 
 div.graph_editor .network.selected {
@@ -86,20 +89,20 @@ div.graph_editor .network {
   cursor: pointer;
 }
 
-div.graph_editor .network_unknown {
-  stroke-width: 1.5px;
-  stroke: blue;
-}
+/*div.graph_editor .network_unknown {*/
+  /*stroke-width: 1.5px;*/
+  /*stroke: blue;*/
+/*}*/
 
-div.graph_editor .network_up {
-  stroke-width: 2.5px;
-  stroke: green;
-}
+/*div.graph_editor .network_up {*/
+  /*stroke-width: 2.5px;*/
+  /*stroke: green;*/
+/*}*/
 
-div.graph_editor .network_down {
-  stroke-width: 2.5px;
-  stroke: red;
-}
+/*div.graph_editor .network_down {*/
+  /*stroke-width: 2.5px;*/
+  /*stroke: red;*/
+/*}*/
 
 
 div.graph_editor .network.selected {
