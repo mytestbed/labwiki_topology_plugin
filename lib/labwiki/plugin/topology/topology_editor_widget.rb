@@ -6,7 +6,8 @@ module LabWiki::Plugin::Topology
   # Allows editing a topology descrription
   #
   class TopologyEditorWidget < LabWiki::ColumnWidget
-    attr_reader :topology_name, :slice_requested
+    attr_reader :topology_name, :topology_descr, :slice_requested
+    renderer :topology_editor_renderer
 
     def initialize(column, config_opts, opts)
       unless column == :prepare
@@ -51,7 +52,8 @@ module LabWiki::Plugin::Topology
       debug "on_save: #{params} - url: #{@url}"
 
       begin
-        @repo.write(@url, JSON.pretty_generate(params[:graph]), "Creating or updating script #{@url}")
+        @topology_descr = params[:graph]
+        @repo.write(@url, JSON.pretty_generate(@topology_descr), "Creating or updating script #{@url}")
       rescue => e
         e_msg = "Failed to save #{@url}. #{e.message}"
         OMF::Base::Loggable.logger('repository').error e_msg
@@ -73,19 +75,19 @@ module LabWiki::Plugin::Topology
         @content_proxy = OMF::Web::ContentRepository.create_content_proxy_for(params[:url], params)
         @topology_descr = JSON.parse(@content_proxy.content)
       end
-        puts "TOPO_DECR>>>> #{@topology_descr}"
+      puts "TOPO_DECR>>>> #{@topology_descr}"
     end
 
-    def content_renderer()
-      debug "content_renderer: #{@opts} -- content_opts: #{@content_opts}"
-      #OMF::Web::Theme.require 'topology_editor_renderer'
-
-      # raise "Undefined @url" unless @url
-      # @topology_descr = @is_new ? nil : @repo.read(@url)
-      opts = {topology: @topology_descr}
-      OMF::Web::Theme.create_renderer(:topology_editor_renderer, self, opts)
-      #TopologyEditorRenderer.new(self, @topology_descr)
-    end
+    # def content_renderer()
+    #   debug "content_renderer: #{@opts} -- content_opts: #{@content_opts}"
+    #   #OMF::Web::Theme.require 'topology_editor_renderer'
+    #
+    #   # raise "Undefined @url" unless @url
+    #   # @topology_descr = @is_new ? nil : @repo.read(@url)
+    #   opts = {topology: @topology_descr}
+    #   OMF::Web::Theme.create_renderer(:topology_editor_renderer, self, opts)
+    #   #TopologyEditorRenderer.new(self, @topology_descr)
+    # end
 
     def mime_type
       'text/topology'

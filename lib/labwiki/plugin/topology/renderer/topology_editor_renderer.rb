@@ -11,6 +11,7 @@ module LabWiki::Plugin::Topology
       super opts
       @opts = {editable: true}.merge(opts)
       @opts[:topology_name] = widget.topology_name
+      @opts[:topology] = widget.topology_descr
       @opts[:aggregates] = SliceServiceProxy.instance.aggregates
 
       @wid = @opts[:wid] = "w#{widget.object_id}"
