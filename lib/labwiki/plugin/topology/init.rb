@@ -31,7 +31,10 @@ LabWiki::PluginManager.register :topology, {
       end,
       :search => lambda do |pat, opts, wopts, &cbk|
         opts[:mime_type] = 'text/topology'
-        OMF::Web::ContentRepository.find_files(pat, opts, &cbk)
+        OMF::Web::ContentRepository.find_files(pat, opts) do |f|
+          f[:img_url] = "plugin/topology/img/topology-edit-16.png"
+          cbk.call(f)
+        end
       end,
       :widget_class => LabWiki::Plugin::Topology::TopologyEditorWidget,
       :handle_mime_type => 'text/topology'
