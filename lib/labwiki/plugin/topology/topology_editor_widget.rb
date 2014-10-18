@@ -24,7 +24,9 @@ module LabWiki::Plugin::Topology
       elsif opts[:action] == 'new'
         # called because of a client side 'new' request
         @name = opts[:topology_name]
-        @repo = (OMF::Web::SessionStore[:prepare, :repos] || []).first
+        # Only fetch repo that can be written to
+        @repo = (OMF::Web::SessionStore[:prepare, :repos] || []).find { |v| !v.read_only? }
+
         unless @repo
           error "Could not find any available repo to write"
           return
